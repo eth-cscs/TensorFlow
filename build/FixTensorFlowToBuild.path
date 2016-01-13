@@ -1,0 +1,53 @@
+--- a/third_party/gpus/crosstool/CROSSTOOL
++++ b/third_party/gpus/crosstool/CROSSTOOL
+@@ -45,6 +45,8 @@ toolchain {
+   tool_path { name: "gcc" path: "clang/bin/crosstool_wrapper_driver_is_not_gcc" }
+   # Use "-std=c++11" for nvcc. For consistency, force both the host compiler
+   # and the device compiler to use "-std=c++11".
++  #linker_flag: "-L/opt/gcc/4.8.2/snos/lib64"
++  linker_flag: "-Wl,-rpath,/opt/gcc/4.8.2/snos/lib64"
+   cxx_flag: "-std=c++11"
+   linker_flag: "-lstdc++"
+   linker_flag: "-B/usr/bin/"
+@@ -53,7 +55,8 @@ toolchain {
+   # used by gcc. That works because bazel currently doesn't track files at
+   # absolute locations and has no remote execution, yet. However, this will need
+   # to be fixed, maybe with auto-detection?
+-  cxx_builtin_include_directory: "/usr/lib/gcc/"
++  cxx_builtin_include_directory: "/opt/gcc/4.8.2/snos/lib"
++  cxx_builtin_include_directory: "/opt/gcc/4.8.2/snos/lib64"
+   cxx_builtin_include_directory: "/usr/local/include"
+   cxx_builtin_include_directory: "/usr/include"
+   tool_path { name: "gcov" path: "/usr/bin/gcov" }
+--- a/third_party/gpus/crosstool/clang/bin/crosstool_wrapper_driver_is_not_gcc
++++ b/third_party/gpus/crosstool/clang/bin/crosstool_wrapper_driver_is_not_gcc
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python2
++#!/usr/bin/python2
+ # Copyright 2015 Google Inc. All Rights Reserved.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+@@ -44,10 +44,10 @@ import sys
+ import pipes
+ 
+ CURRENT_DIR = os.path.dirname(sys.argv[0])
+-CPU_COMPILER = ('/usr/bin/gcc')
+-NVCC_PATH = CURRENT_DIR + '/../../../cuda/bin/nvcc'
+-GCC_HOST_COMPILER_PATH = ('/usr/bin/gcc')
+-LLVM_HOST_COMPILER_PATH = ('/usr/bin/gcc')
++CPU_COMPILER = ('/opt/gcc/4.8.2/bin/gcc')
++NVCC_PATH = '/opt/nvidia/cudatoolkit7.0/7.0.28-1.0502.10742.5.1/bin/nvcc'
++GCC_HOST_COMPILER_PATH = ('/opt/gcc/4.8.2/bin/gcc')
++LLVM_HOST_COMPILER_PATH = ('/opt/gcc/4.8.2/bin/gcc')
+ PREFIX_DIR = os.path.dirname(GCC_HOST_COMPILER_PATH)
+ 
+ 
+@@ -281,7 +281,7 @@ def InvokeNvcc(argv, log=False):
+ 
+   # TODO(zhengxq): for some reason, 'gcc' needs this help to find 'as'.
+   # Need to investigate and fix.
+-  cmd = 'PATH=' + PREFIX_DIR + ' ' + cmd
++  cmd = 'PATH=' + PREFIX_DIR + ':/usr/bin ' + cmd
+   if log: Log(cmd)
+   return os.system(cmd)
+ 

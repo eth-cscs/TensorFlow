@@ -1,0 +1,85 @@
+--- bazel-0.1.1/scripts/bootstrap/compile.sh	2015-11-10 16:00:35.000000000 +0100
++++ bazel-0.1.1/scripts/bootstrap/compile.sh	2016-01-07 16:42:53.000000000 +0100
+@@ -173,8 +173,9 @@
+ 
+ # Check that javac -version returns a upper version than $JAVA_VERSION.
+ get_java_version
+-[ ${JAVA_VERSION#*.} -le ${JAVAC_VERSION#*.} ] || \
+-  fail "JDK version (${JAVAC_VERSION}) is lower than ${JAVA_VERSION}, please set \$JAVA_HOME."
++#[ ${JAVA_VERSION#*.} -le ${JAVAC_VERSION#*.} ] || \
++#  fail "JDK version (${JAVAC_VERSION}) is lower than ${JAVA_VERSION}, please set \$JAVA_HOME."
++JAVA_VERSION=1.8
+ 
+ JAR="${JAVA_HOME}/bin/jar"
+ 
+@@ -325,7 +326,7 @@
+ 
+ log "Compiling build-runfiles..."
+ # Clang on Linux requires libstdc++
+-run_silent "${CXX}" -o ${OUTPUT_DIR}/build-runfiles -std=c++0x src/main/tools/build-runfiles.cc -l stdc++
++run_silent "${CXX}" -o ${OUTPUT_DIR}/build-runfiles -std=c++0x src/main/tools/build-runfiles.cc -l stdc++ ${LDFLAGS}
+ 
+ log "Compiling process-wrapper..."
+ run_silent "${CC}" -o ${OUTPUT_DIR}/process-wrapper -std=c99 src/main/tools/process-wrapper.c src/main/tools/process-tools.c -lm
+--- bazel-0.1.1/src/BUILD	2015-11-10 16:00:35.000000000 +0100
++++ bazel-0.1.1/src/BUILD	2016-01-05 13:13:15.000000000 +0100
+@@ -50,7 +50,7 @@
+     outs = ["java.version"],
+     cmd = """
+           VERSION_LINE=$$(cat $< | grep target_version);
+-          JAVA_VERSION=$$(echo $${VERSION_LINE} | sed -E 's/.*value="([^"])".*/\\1/');
++          JAVA_VERSION=$$(echo $${VERSION_LINE} | sed 's/.*value="\\([^"]\\)".*/\\1/');
+           if [ -z "$${JAVA_VERSION}" ]; then
+             echo "1.8" >$@  # Java 8 is the default
+           elif [[ "$${JAVA_VERSION}" =~ ^[0-9]+$$ ]]; then
+--- bazel-0.1.1/src/main/cpp/blaze_util.cc	2015-11-10 16:00:35.000000000 +0100
++++ bazel-0.1.1/src/main/cpp/blaze_util.cc	2016-01-05 10:52:45.000000000 +0100
+@@ -335,6 +335,7 @@
+ 
+ bool CheckJavaVersionIsAtLeast(const string &jvm_version,
+                                const string &version_spec) {
++  return true;
+   vector<string> jvm_version_vect = blaze_util::Split(jvm_version, '.');
+   int jvm_version_size = static_cast<int>(jvm_version_vect.size());
+   vector<string> version_spec_vect = blaze_util::Split(version_spec, '.');
+--- bazel-0.1.1/tools/build_rules/java_rules_skylark.bzl	2015-11-10 16:00:35.000000000 +0100
++++ bazel-0.1.1/tools/build_rules/java_rules_skylark.bzl	2016-01-05 14:33:47.000000000 +0100
+@@ -21,6 +21,7 @@
+ 
+ def java_library_impl(ctx):
+   javac_options = ctx.fragments.java.default_javac_flags
++  javac_options= ["-source", "1.8", "-target", "1.8"]
+   class_jar = ctx.outputs.class_jar
+   compile_time_jars = set(order="link")
+   runtime_jars = set(order="link")
+--- bazel-0.1.1/tools/cpp/CROSSTOOL	2015-11-10 16:00:35.000000000 +0100
++++ bazel-0.1.1/tools/cpp/CROSSTOOL	2016-01-08 09:08:00.000000000 +0100
+@@ -115,10 +115,13 @@
+ 
+   tool_path { name: "ar" path: "/usr/bin/ar" }
+   tool_path { name: "compat-ld" path: "/usr/bin/ld" }
+-  tool_path { name: "cpp" path: "/usr/bin/cpp" }
++  tool_path { name: "cpp" path: "/opt/gcc/4.8.2/bin/cpp" }
+   tool_path { name: "dwp" path: "/usr/bin/dwp" }
+-  tool_path { name: "gcc" path: "/usr/bin/gcc" }
++  tool_path { name: "gcc" path: "/opt/gcc/4.8.2/bin/gcc" }
+   cxx_flag: "-std=c++0x"
++  linker_flag: "-L/opt/gcc/4.8.2/snos/lib64"
++  linker_flag: "-Wl,-rpath,/opt/gcc/4.8.2/snos/lib64"
++  linker_flag: "-L/opt/gcc/4.8.2/snos/lib64"
+   linker_flag: "-lstdc++"
+   linker_flag: "-B/usr/bin/"
+ 
+@@ -126,9 +129,9 @@
+   # used by gcc. That works because bazel currently doesn't track files at
+   # absolute locations and has no remote execution, yet. However, this will need
+   # to be fixed, maybe with auto-detection?
+-  cxx_builtin_include_directory: "/usr/lib/gcc/"
+-  cxx_builtin_include_directory: "/usr/local/include"
+-  cxx_builtin_include_directory: "/usr/include"
++  cxx_builtin_include_directory: "/opt/gcc/4.8.2/snos/lib"
++  cxx_builtin_include_directory: "/opt/gcc/4.8.2/snos/lib64"
++  cxx_builtin_include_directory: "/opt/gcc/4.8.2/snos/include"
+   tool_path { name: "gcov" path: "/usr/bin/gcov" }
+ 
+   # C(++) compiles invoke the compiler (as that is the one knowing where
