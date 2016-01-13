@@ -2,7 +2,7 @@
 
 The first step is to build Tensorflow which is not trivial on XC system.
 Tensorflow uses Bazel as a build system which is in Beta version meaning that it requires a lot of tricks to have it working.
-All necessary files to compile Tensorflows are in [tensorflow/build](https://github.com/eth-cscs/bigdata/blob/master/tensorflows/build)
+All necessary files to compile Tensorflows are in [build](https://github.com/eth-cscs/TensorFlow/tree/master/build)
 
 Set-up modules:
 ```
