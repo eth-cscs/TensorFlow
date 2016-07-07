@@ -1,5 +1,5 @@
 diff --git a/third_party/gpus/crosstool/CROSSTOOL b/third_party/gpus/crosstool/CROSSTOOL
-index 8db81a9..f362b25 100644
+index 8db81a9..7b13870 100644
 --- a/third_party/gpus/crosstool/CROSSTOOL
 +++ b/third_party/gpus/crosstool/CROSSTOOL
 @@ -57,9 +57,13 @@ toolchain {
@@ -18,16 +18,15 @@ index 8db81a9..f362b25 100644
    tool_path { name: "gcov" path: "/usr/bin/gcov" }
  
    # C(++) compiles invoke the compiler (as that is the one knowing where
-@@ -120,6 +124,8 @@ toolchain {
+@@ -120,6 +124,7 @@ toolchain {
    # Gold linker only? Can we enable this by default?
    # linker_flag: "-Wl,--warn-execstack"
    # linker_flag: "-Wl,--detect-odr-violations"
 +  linker_flag: "-Wl,-rpath,/opt/gcc/4.9.3/snos/lib64/"
-+  linker_flag: "-Wl,-rpath,/apps/daint/UES/5.2.UP04/sandbox-ds/tensorflow/easybuild/software/PCRE/8.38-CrayGNU-2016.03/lib"
  
    compilation_mode_flags {
      mode: DBG
-@@ -165,7 +171,7 @@ toolchain {
+@@ -165,7 +170,7 @@ toolchain {
  
    tool_path { name: "ar" path: "/usr/bin/libtool" }
    tool_path { name: "compat-ld" path: "/usr/bin/ld" }
@@ -36,7 +35,7 @@ index 8db81a9..f362b25 100644
    tool_path { name: "dwp" path: "/usr/bin/dwp" }
    tool_path { name: "gcc" path: "clang/bin/crosstool_wrapper_driver_is_not_gcc" }
    cxx_flag: "-std=c++11"
-@@ -178,7 +184,7 @@ toolchain {
+@@ -178,7 +183,7 @@ toolchain {
    # TODO(ulfjack): This is wrong on so many levels. Figure out a way to auto-detect the proper
    # setting from the local compiler, and also how to make incremental builds correct.
    cxx_builtin_include_directory: "/"

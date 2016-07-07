@@ -125,7 +125,6 @@ toolchain {
   # linker_flag: "-Wl,--warn-execstack"
   # linker_flag: "-Wl,--detect-odr-violations"
   linker_flag: "-Wl,-rpath,/opt/gcc/4.9.3/snos/lib64/"
-  linker_flag: "-Wl,-rpath,/apps/daint/UES/5.2.UP04/sandbox-ds/tensorflow/easybuild/software/PCRE/8.38-CrayGNU-2016.03/lib"
 
   compilation_mode_flags {
     mode: DBG
