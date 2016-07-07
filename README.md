@@ -1,5 +1,13 @@
 ## Tensorflow
 
+###  v0.9.0 (*new*)
+
+* GPU-enabled TF on XC30
+  * [Running existing module](https://github.com/eth-cscs/TensorFlow/wiki/tensorflow-0.9.0-daint)
+  * [Building pip package](https://github.com/eth-cscs/TensorFlow/wiki/tensorflow-0.9.0-daint-build)
+
+### v0.6.0
+
 The first step is to build Tensorflow which is not trivial on XC system.
 Tensorflow uses Bazel as a build system which is in Beta version meaning that it requires a lot of tricks to have it working.
 All necessary files to compile Tensorflows are in [build](https://github.com/eth-cscs/TensorFlow/tree/master/build)
