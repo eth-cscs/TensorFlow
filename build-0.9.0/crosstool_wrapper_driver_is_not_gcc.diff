@@ -1,0 +1,63 @@
+diff --git a/third_party/gpus/crosstool/clang/bin/crosstool_wrapper_driver_is_not_gcc b/third_party/gpus/crosstool/clang/bin/crosstool_wrapper_driver_is_not_gcc
+index 7e76331..3c38ab7 100755
+--- a/third_party/gpus/crosstool/clang/bin/crosstool_wrapper_driver_is_not_gcc
++++ b/third_party/gpus/crosstool/clang/bin/crosstool_wrapper_driver_is_not_gcc
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python2.7
++#!/usr/bin/env python
+ # Copyright 2015 The TensorFlow Authors. All Rights Reserved.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+@@ -34,6 +34,8 @@ NOTES:
+   //third_party/gpus/crosstool/v*/*/clang/bin/crosstool_wrapper_is_not_gcc
+ """
+ 
++from __future__ import print_function
++
+ __author__ = 'keveman@google.com (Manjunath Kudlur)'
+ 
+ from argparse import ArgumentParser
+@@ -45,16 +47,25 @@ import pipes
+ 
+ # "configure" uses the specific format to substitute the following string.
+ # If you change it, make sure you modify "configure" as well.
+-CPU_COMPILER = ('/usr/bin/gcc')
+-GCC_HOST_COMPILER_PATH = ('/usr/bin/gcc')
++# Unofficial setting. DO NOT SUBMIT!!!
++# Unofficial setting. DO NOT SUBMIT!!!
++# Unofficial setting. DO NOT SUBMIT!!!
++CPU_COMPILER = ('/opt/gcc/4.9.3/snos/bin/gcc')
++# Unofficial setting. DO NOT SUBMIT!!!
++# Unofficial setting. DO NOT SUBMIT!!!
++# Unofficial setting. DO NOT SUBMIT!!!
++GCC_HOST_COMPILER_PATH = ('/opt/gcc/4.9.3/snos/bin/gcc')
+ 
+ CURRENT_DIR = os.path.dirname(sys.argv[0])
+-NVCC_PATH = CURRENT_DIR + '/../../../cuda/bin/nvcc'
+-LLVM_HOST_COMPILER_PATH = ('/usr/bin/gcc')
+-PREFIX_DIR = os.path.dirname(GCC_HOST_COMPILER_PATH)
++#NVCC_PATH = CURRENT_DIR + '/../../../cuda/bin/nvcc'
++NVCC_PATH = ('/opt/nvidia/cudatoolkit7.0/7.0.28-1.0502.10742.5.1/bin/nvcc')
++LLVM_HOST_COMPILER_PATH = ('/opt/gcc/4.9.3/snos/bin/gcc')
++AS_PATH = ('/usr/bin/as')
++PREFIX_DIR = os.path.dirname(AS_PATH)
++#PREFIX_DIR = os.path.dirname(GCC_HOST_COMPILER_PATH)
+ 
+ def Log(s):
+-  print 'gpus/crosstool: {0}'.format(s)
++  print('gpus/crosstool: {0}'.format(s))
+ 
+ 
+ def GetOptionValue(argv, option):
+@@ -250,7 +261,10 @@ def InvokeNvcc(argv, log=False):
+ 
+   # "configure" uses the specific format to substitute the following string.
+   # If you change it, make sure you modify "configure" as well.
+-  supported_cuda_compute_capabilities = [ "3.5", "5.2" ]
++  # Unofficial setting. DO NOT SUBMIT!!!
++  # Unofficial setting. DO NOT SUBMIT!!!
++  # Unofficial setting. DO NOT SUBMIT!!!
++  supported_cuda_compute_capabilities = ["3.5",]
+   nvccopts = ''
+   for capability in supported_cuda_compute_capabilities:
+     capability = capability.replace('.', '')
