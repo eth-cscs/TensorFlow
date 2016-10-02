@@ -13,3 +13,4 @@ export LAPACK=/opt/intel/15.0.1.133/composer_xe_2015.1.133/mkl/lib/intel64/libmk
 
 export SWIG_PATH=/scratch/daint/lhelming/usr/local/bin/swig
 export SWIG_LIB=/scratch/daint/lhelming/usr/local/share/swig/3.0.10
+

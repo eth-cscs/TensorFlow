@@ -44,3 +44,4 @@ cd /scratch/$USER/tensorflow/
 
 bazel build -c opt --config=cuda //tensorflow/tools/pip_package:build_pip_package --verbose_failures
 
+
