@@ -1,0 +1,11 @@
+
+n
+n
+/apps/daint/UES/jenkins/dom-acceptance/haswell/easybuild/software/Python/3.5.2-CrayGNU-2016.11/lib/python3.5/site-packages
+y
+/opt/gcc/4.9.3/snos/bin/gcc
+8.0
+/opt/nvidia/cudatoolkit8.0/default
+5
+/apps/dom/UES/6.0.UP02/sandbox-ds/cuda
+6.0
