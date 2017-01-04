@@ -5,7 +5,7 @@ Running TensorFlow of CSCS is still not officially supported and thus support is
 TensorFlow has only been tested on Piz Daint.
 
 ## Loading TensorFlow Module
-Let's use TensorFlow 0.11.0. For other versions have a look at the [[Wiki][https://github.com/eth-cscs/TensorFlow/wiki]].
+Let's use TensorFlow 0.11.0. For other versions have a look at the [Wiki](https://github.com/eth-cscs/TensorFlow/wiki).
 ```
 module load daint-gpu
 module use /apps/daint/UES/6.0.UP02/sandbox-ds/easybuild/haswell/modules/all/
@@ -34,7 +34,7 @@ I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library
 ### Submit a Test Program
 
 ## Submit a Job to SLURM (Scheduling System)
-More detailed documentation on how to submit a job can be found [[here][http://user.cscs.ch/getting_started/running_jobs/piz_daint/index.html]].
+More detailed documentation on how to submit a job can be found [here](http://user.cscs.ch/getting_started/running_jobs/piz_daint/index.html).
 
 ## Compile Custom Version of TensorFlow
 
