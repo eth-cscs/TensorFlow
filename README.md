@@ -58,7 +58,42 @@ Extracting data/train-images-idx3-ubyte.gz
 ```
 
 ## Submit a Job to SLURM (Scheduling System)
-More detailed documentation on how to submit a job can be found [here](http://user.cscs.ch/getting_started/running_jobs/piz_daint/index.html).
+To manage jobs on Daint, CSCS uses the workload manager Slurm. Jobs are defined by so-called sbatch files. A simple sbatch file to test TensorFlow look as follows:
+```
+#!/bin/bash
+#SBATCH --time=00:10:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=12
+#SBATCH --ntasks=1
+#SBATCH --constraint=gpu
+#SBATCH --output=test-tf-%j.log
+#SBATCH --error=test-tf-%j.log
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+module use /apps/daint/UES/6.0.UP02/sandbox-ds/easybuild/haswell/modules/all/
+module load daint-gpu
+module load TensorFlow/0.11.0-CrayGNU-2016.11-Python-3.5.2
+
+srun python -m 'tensorflow.models.image.mnist.convolutional'
+```
+
+Say, this sbatch file is named `test-tf.sbatch`, then it is submitted to Slurm by
+```
+sbatch test-tf.sbatch
+```
+
+The status of Slurm's queue can be viewed with
+```
+squeue -u $USER
+```
+
+and a job can be cancelled running
+```
+scancel <JOBID>
+```
+
+A more detailed documentation on how to submit a job can be found [here](http://user.cscs.ch/getting_started/running_jobs/piz_daint/index.html).
 
 ## Compile Custom Version of TensorFlow
 
