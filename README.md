@@ -1,87 +1,64 @@
-## Tensorflow
+# Tensorflow
+This document tries to give a quick introduction how to get a first test program running. Note that running TensorFlow at CSCS is still not officially supported and thus support is limited.
 
-###  v0.9.0 (*new*)
+## Supported Systems
+TensorFlow has only been tested on Piz Daint.
 
-* GPU-enabled TF on XC30
-  * [Running existing module](https://github.com/eth-cscs/TensorFlow/wiki/tensorflow-0.9.0-daint)
-  * [Building pip package](https://github.com/eth-cscs/TensorFlow/wiki/TensorFlow-0.9.0-Daint-GPU-build)
-
-### v0.6.0
-
-The first step is to build Tensorflow which is not trivial on XC system.
-Tensorflow uses Bazel as a build system which is in Beta version meaning that it requires a lot of tricks to have it working.
-All necessary files to compile Tensorflows are in [build](https://github.com/eth-cscs/TensorFlow/tree/master/build)
-
-Set-up modules:
+## Loading TensorFlow Module
+As an example we use TensorFlow 0.11.0, for other versions have a look at the [Wiki](https://github.com/eth-cscs/TensorFlow/wiki).
 ```
-module purge
-module load cudatoolkit/7.0.28-1.0502.10742.5.1
-module load gcc/4.8.2
-module load java/jdk1.8.0_51
-```
-Note that you can use a version of GCC up to 4.10.
-
-To build Bazel you need to download version [0.1.1](https://github.com/bazelbuild/bazel/archive/0.1.1.tar.gz).
-
-1. You will need to modify Bazel by applying the following patch:
-`patch -p1 < FixBazelToBuild.patch`
-- This patch will help Bazel to accept the Java version of the module, add a LDFLAGS for adding the shared library path into the binaries, and setup some variables to use gcc 4.8.2 installed in a non-standard path.
-- You will need to edit the file `tools/cpp/CROSSTOOL` to setup your GCC path, see end of file `FixBazelToBuild.patch` as an example
-
-2. Export this env. variables:
-`export LDFLAGS=-Wl,-rpath,/opt/gcc/4.8.2/snos/lib64`
-
-3. Then compile it:
-`./compile.sh build`
-
-If it succeed you will have it will be located here `output/bazel`
-
-Then once bazel is built add it to your path and go in the TensorFlow directory.
-
-1. Apply the following patch to update TensorFlow to be built on XC system.
-`patch -p1 < FixTensorFlowToBuild.path`
-
-2. configure TensorFlow as explained [here](https://www.tensorflow.org/versions/master/get_started/os_setup.html#installing-from-sources) using the cuda option.
-
-3. Start the build as follow:
-`bazel build -c opt --config=cuda --verbose_failures --spawn_strategy=standalone //tensorflow/cc:tutorials_example_trainer`
-
-If it succeed you will have the binary `tutorials_example_trainer` in `bazel-bin/tensorflow/cc/`.
-
-The main issue with Bazel/TensorFlow build mechanism is that it clears the environment before launching a command and it does not provide anyway to setup the cleared environment.
-That results in many hacks.
-
----
-
-Building a pip package for Tensorflow:
-
-1. Load the apropriate Python module that allows to create a `virtual env`, on Piz-Daint executes the following code:
-`module load Python/2.7.10-CrayGNU-5.2.40`
-
-2. Create a virual environement and install numpy:
-```
-virtualenv tf_venv
-source tf_venc/bin/activate
-pip install numpy
-deactivate
+module load daint-gpu
+module use /apps/daint/UES/6.0.UP02/sandbox-ds/easybuild/haswell/modules/all/
+module load TensorFlow/0.11.0-CrayGNU-2016.11-Python-3.5
 ```
 
-3. Configure TensorFlow by specifying the Python binary in your virtual environmemt also add the Cuda location like in the normal build (aforementioned).
+## Test TensorFlow
 
-4. Compile it by following the steps [here](https://www.tensorflow.org/versions/master/get_started/os_setup.html#create-the-pip-package-and-install)
+### Simple Import Test
+On the Daint login node, directly try to import the TensorFlow module:
 
-5. Create a new virtual env.
-You will obtain a file named like `tensorflow-0.6.0-cp27-none-linux_x86_64.whl`, create a new virtual env and install this file with pip:
 ```
-virtualenv-2.7 --system-site-packages --python=$( which python2.7 ) tftest_venc
-source tftest_venc/bin/activate
-pip install tensorflow-0.6.0-cp27-none-linux_x86_64.whl
-pip install --upgrade numpy
+python -c 'import tensorflow as tf'
 ```
 
-6. Test it, run the following code while still being the tftest_venv:
+The output should be something like this:
+
 ```
-cd tensorflow/models/image/mnist
-aprun python convolutional.py
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcublas.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcudnn.so.5 locally
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcufft.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcuda.so.1 locally
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libc
 ```
+
+### Test using the MNIST demo model
+A more elaborate test is to actually train a model using the GPU:
+```
+salloc -N1 -C gpu
+srun python -m 'tensorflow.models.image.mnist.convolutional'
+```
+
+The output should be something like this:
+```
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcublas.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcudnn.so.5 locally
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcufft.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcuda.so.1 locally
+I tensorflow/stream_executor/dso_loader.cc:111] successfully opened CUDA library libcurand.so.8.0 locally
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:951] Found device 0 with properties:
+name: Tesla P100-PCIE-16GB
+major: 6 minor: 0 memoryClockRate (GHz) 1.3285
+pciBusID 0000:02:00.0
+Total memory: 15.90GiB
+Free memory: 15.62GiB
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:972] DMA: 0
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] 0:   Y
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:02:00.0)
+Extracting data/train-images-idx3-ubyte.gz
+```
+
+## Submit a Job to SLURM (Scheduling System)
+More detailed documentation on how to submit a job can be found [here](http://user.cscs.ch/getting_started/running_jobs/piz_daint/index.html).
+
+## Compile Custom Version of TensorFlow
 
