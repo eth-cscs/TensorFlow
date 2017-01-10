@@ -3,7 +3,7 @@ new file mode 100644
 index 0000000..799fdbf
 --- /dev/null
 +++ b/configure-cscs.sh
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,22 @@
 +#!/bin/bash
 +
 +CONF_IN="configure.in"
@@ -13,7 +13,13 @@ index 0000000..799fdbf
 +echo "n" >> $CONF_IN
 +echo $EBROOTPYTHON"/lib/python3.5/site-packages" >> $CONF_IN
 +echo "n" >> $CONF_IN
-+echo "n" >> $CONF_IN
++echo "y" >> $CONF_IN
++echo $GCC_PATH"/bin/gcc" >> $CONF_IN
++echo "8.0" >> $CONF_IN
++echo $CRAY_CUDATOOLKIT_DIR >> $CONF_IN
++echo "5" >> $CONF_IN
++echo $EBROOTCUDNN >> $CONF_IN
++echo "6.0" >> $CONF_IN
 +
 +cat $CONF_IN
 +echo "---"
