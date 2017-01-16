@@ -9,7 +9,7 @@ As an example we use TensorFlow 0.11.0, for other versions have a look at the [W
 ```
 module load daint-gpu
 module use /apps/daint/UES/6.0.UP02/sandbox-ds/easybuild/haswell/modules/all/
-module load TensorFlow/0.11.0-CrayGNU-2016.11-Python-3.5
+module load TensorFlow/0.11.0-CrayGNU-2016.11-Python-3.5.2
 ```
 
 ## Test TensorFlow
