@@ -1,0 +1,11 @@
+/apps/daint/UES/5.2.UP04/sandbox-ds/easybuild/software/Python/3.5.1-CrayGNU-2016.03-rpath/bin/python
+n
+n
+/apps/daint/UES/jenkins/5.2.UP04/easybuild/software/Python/3.5.1-CrayGNU-2016.03/lib/python3.5/site-packages
+y
+/opt/gcc/4.9.3/snos/bin/gcc
+7.0
+/opt/nvidia/cudatoolkit7.0/7.0.28-1.0502.10742.5.1
+4
+/apps/daint/UES/5.2.UP04/sandbox-ds/tensorflow/cudadnn/
+3.5
